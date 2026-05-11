@@ -2,10 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,21 +15,18 @@ use App\Http\Controllers\TransactionController;
 |
 */
 
-/*user*/
-Route::post('/user/register', [UserController::class, 'register']);
-Route::post('/user/login', [UserController::class, 'login']);
-Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getAuthenticatedUser']);
+// =====================
+// AUTHENTICATION ROUTES
+// =====================
+Route::prefix('auth')->group(function () {
+    // Public routes
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-/*category*/
-Route::get('/category', [CategoryController::class, 'index']);
-Route::post('/category', [CategoryController::class, 'store']);
-
-/*product*/
-Route::get('/product', [ProductController::class, 'index']);
-Route::post('/product', [ProductController::class, 'store']);
-Route::get('/product/{uuid}', [ProductController::class, 'show']);
-Route::put('/product/{uuid}', [ProductController::class, 'update']);
-Route::delete('/product/{uuid}', [ProductController::class, 'destroy']);
-
-/*transaction*/
-Route::post('/transaction', [TransactionController::class, 'store']);
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/logout-all', [AuthController::class, 'logoutAll']);
+    });
+});
