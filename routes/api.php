@@ -21,18 +21,18 @@ use App\Http\Controllers\TransactionController;
 /*user*/
 Route::post('/user/register', [UserController::class, 'register']);
 Route::post('/user/login', [UserController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/user', [UserController::class, 'getAuthenticatedUser']);
+
 /*category*/
 Route::get('/category', [CategoryController::class, 'index']);
 Route::post('/category', [CategoryController::class, 'store']);
+
 /*product*/
 Route::get('/product', [ProductController::class, 'index']);
 Route::post('/product', [ProductController::class, 'store']);
 Route::get('/product/{uuid}', [ProductController::class, 'show']);
 Route::put('/product/{uuid}', [ProductController::class, 'update']);
 Route::delete('/product/{uuid}', [ProductController::class, 'destroy']);
-/*product*/
-Route::post('/transaction', [TransactionController::class, 'store']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+/*transaction*/
+Route::post('/transaction', [TransactionController::class, 'store']);
