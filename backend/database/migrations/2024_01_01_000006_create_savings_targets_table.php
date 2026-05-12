@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignUuid('savings_goal_id')->constrained('savings_goals')->onDelete('cascade');
             $table->enum('frequency_type', ['daily', 'weekly', 'monthly'])->default('weekly');
             $table->decimal('target_amount', 15, 2);
-            $table->timestamp('period_start_date');
-            $table->timestamp('period_end_date');
+            $table->dateTime('period_start_date');
+            $table->dateTime('period_end_date');
             $table->decimal('amount_collected', 15, 2)->default(0);
             $table->enum('status', ['pending', 'on_track', 'behind', 'completed'])->default('pending');
             $table->timestamps();
