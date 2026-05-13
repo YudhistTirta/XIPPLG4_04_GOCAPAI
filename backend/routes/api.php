@@ -21,6 +21,15 @@ use App\Http\Controllers\Api\SavingsGoalController;
 // =====================
 // AUTHENTICATION ROUTES
 // =====================
+
+// Fallback route for unauthenticated users missing the Accept: application/json header
+Route::get('/login', function () {
+    return response()->json([
+        'success' => false,
+        'message' => 'Unauthenticated. Please ensure you have added Authorization: Bearer {token} and Accept: application/json in your headers.'
+    ], 401);
+})->name('login');
+
 Route::prefix('auth')->group(function () {
     // Public routes
     Route::post('/register', [AuthController::class, 'register']);
