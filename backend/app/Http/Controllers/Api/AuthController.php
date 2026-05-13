@@ -102,7 +102,63 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'Login successful',
             'data' => [
-                'user' => $user->only(['id', 'name', 'email', 'phone']),
+                'user' => $user->only(['id', 'name', 'email', 'phone', 'role']),
+                'token' => $token,
+                'token_type' => 'Bearer'
+            ]
+        ], 200);
+    }
+
+    /**
+     * Login admin and get token
+     * 
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function adminLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials',
+                'errors' => ['email' => ['The provided credentials are invalid.']]
+            ], 401);
+        }
+
+        // Check if user is admin
+        if ($user->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Access denied. Admin only.',
+                'errors' => ['role' => ['You do not have admin privileges.']]
+            ], 403);
+        }
+
+        // Revoke all existing tokens (optional - for security)
+        // $user->tokens()->delete();
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin login successful',
+            'data' => [
+                'user' => $user->only(['id', 'name', 'email', 'phone', 'role']),
                 'token' => $token,
                 'token_type' => 'Bearer'
             ]
@@ -122,7 +178,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'User profile retrieved',
-            'data' => $user->only(['id', 'name', 'email', 'phone', 'created_at', 'updated_at'])
+            'data' => $user->only(['id', 'name', 'email', 'phone', 'role', 'created_at', 'updated_at'])
         ], 200);
     }
 
