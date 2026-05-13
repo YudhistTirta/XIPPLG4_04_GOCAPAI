@@ -4,32 +4,31 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\SavingsTransaction; // Pastikan Model ini sudah ada
-use App\Models\SavingsGoal;        // Pastikan Model ini sudah ada
+use App\Models\SavingsTransaction;
+use Illuminate\Support\Facades\Auth;
 
 class SavingsTransactionController extends Controller
 {
     public function store(Request $request, $goalId)
     {
-        // 1. Validasi data yang masuk
         $validated = $request->validate([
             'amount' => 'required|numeric|min:1',
-            'type' => 'required|in:deposit,withdraw',
-            'note' => 'nullable|string'
+            'type' => 'required|in:deposit,withdrawal',
+            'description' => 'nullable|string' // Ganti dari note ke description
         ]);
 
-        // 2. Simpan transaksi ke database
         $transaction = new SavingsTransaction();
+        $transaction->user_id = Auth::id(); // Mengambil ID user yang login
         $transaction->savings_goal_id = $goalId;
         $transaction->amount = $validated['amount'];
         $transaction->type = $validated['type'];
-        $transaction->note = $validated['note'] ?? null;
+        $transaction->description = $validated['description']; // Ganti ke description
+        $transaction->transaction_date = now();
         $transaction->save();
 
-        // 3. Beri respon sukses
         return response()->json([
             'success' => true,
-            'message' => 'Transaksi berhasil dicatat!',
+            'message' => 'Transaksi berhasil!',
             'data' => $transaction
         ], 201);
     }
