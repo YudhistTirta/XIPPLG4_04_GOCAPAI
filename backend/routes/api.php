@@ -69,3 +69,4 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/categories', [CategoryController::class, 'store']);
 });
+ 
