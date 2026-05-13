@@ -39,5 +39,6 @@ Route::prefix('auth')->group(function () {
 // =====================
 Route::get('/categories', [CategoryController::class, 'index']);
 
-
-Route::post('/categories', [CategoryController::class, 'store']);
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+});
