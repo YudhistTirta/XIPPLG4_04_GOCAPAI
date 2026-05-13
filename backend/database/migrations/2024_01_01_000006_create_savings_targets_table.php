@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('savings_targets', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('savings_goal_id')->constrained('savings_goals')->onDelete('cascade');
-            $table->enum('frequency_type', ['daily', 'weekly', 'monthly'])->default('wee kly');
+            $table->enum('frequency_type', ['daily', 'weekly', 'monthly'])->default('weekly');
             $table->decimal('target_amount', 15, 2);
             $table->dateTime('period_start_date');
             $table->dateTime('period_end_date');
