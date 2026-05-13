@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Api\SavingsTransactionController;
+use App\Http\Controllers\Api\SavingsGoalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +31,24 @@ Route::prefix('auth')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/logout-all', [AuthController::class, 'logoutAll']);
-        Route::post('/api/savings-goals/{goalId}/transactions', [SavingsTransactionController::class, 'store']);
     });
+});
+
+// =====================
+// PROTECTED ROUTES
+// =====================
+Route::middleware('auth:sanctum')->group(function () {
+    // Savings Goal Routes
+    Route::get('/savings-goals', [SavingsGoalController::class, 'index']);
+    Route::post('/savings-goals', [SavingsGoalController::class, 'store']);
+    Route::get('/savings-goals/{id}', [SavingsGoalController::class, 'show']);
+    Route::put('/savings-goals/{id}', [SavingsGoalController::class, 'update']);
+    Route::delete('/savings-goals/{id}', [SavingsGoalController::class, 'destroy']);
+    Route::put('/savings-goals/{id}/status', [SavingsGoalController::class, 'updateStatus']);
+    Route::get('/savings-goals/{id}/progress', [SavingsGoalController::class, 'getProgress']);
+
+    // Savings Transaction Routes
+    Route::post('/savings-goals/{goalId}/transactions', [SavingsTransactionController::class, 'store']);
 });
 
 // =====================
