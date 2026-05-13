@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Api\SavingsTransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +30,14 @@ Route::prefix('auth')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::post('/logout-all', [AuthController::class, 'logoutAll']);
-    Route::post('/api/savings-goals/{goalId}/transactions', [SavingsTransactionController::class, 'store']);
+        Route::post('/api/savings-goals/{goalId}/transactions', [SavingsTransactionController::class, 'store']);
     });
 });
+
+// =====================
+// CATEGORY ROUTES
+// =====================
+Route::get('/categories', [CategoryController::class, 'index']);
+
+
+Route::post('/categories', [CategoryController::class, 'store']);
