@@ -120,7 +120,7 @@ DELETE /api/savings-transactions/{id}            - Delete transaksi
 ### Category Endpoints
 ```
 GET    /api/categories             - Get semua kategori
-POST   /api/categories             - Create kategori (admin only)
+POST   /api/categories             - Create, Update, Delete kategori (admin only)
 ```
 
 ---
